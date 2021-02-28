@@ -1,0 +1,25 @@
+---
+hosts : desktop
+become : true
+  - name : apt-get update
+    apt: update_cache=yes
+    when: ansible_distribution in ["Debian","Ubuntu"]
+
+  - name: Add Cron task daily update
+    cron:
+      name: Daily upgrade
+      user:
+      minute: "0 4 * * *""
+      job: apt-get update && apt-get upgrade
+
+  - name: copy wallpaper file
+    copy:
+      src: files/wallpaper.png
+      dest: /usr/share/backgrounds/ansible-wallpaper.png
+      owner: root
+      group: root
+
+    
+  - name: Install latest Google Chrome
+    apt:
+      deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
